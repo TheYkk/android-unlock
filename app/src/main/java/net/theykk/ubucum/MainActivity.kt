@@ -1,7 +1,10 @@
 package net.theykk.ubucum
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
+import android.webkit.URLUtil
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +12,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import java.net.URL
 import java.util.concurrent.Executor
-
+import com.google.zxing.integration.android.IntentIntegrator
 
 class MainActivity: AppCompatActivity() {
     private lateinit
@@ -19,6 +22,7 @@ class MainActivity: AppCompatActivity() {
     private lateinit
     var promptInfo: BiometricPrompt.PromptInfo
     private  var action = 1;
+
     override fun onCreate(savedInstanceState: Bundle ? ) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,10 +42,12 @@ class MainActivity: AppCompatActivity() {
                 super.onAuthenticationSucceeded(result)
                 Toast.makeText(applicationContext, "Authentication succeeded!", Toast.LENGTH_SHORT).show()
                 if (action == 1 ){
-                    var res = URL("http://kaan-ubu:8080/fe910f0f-0ed3-4ad7-ac71-944c96aba71c").readText();
+                    // ? UNLOCK
+                    var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5/unlock").readText();
                     Toast.makeText(applicationContext, res, Toast.LENGTH_SHORT).show()
                 }else{
-                    var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5").readText();
+                    // ? LOCK
+                    var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5/lock").readText();
                     Toast.makeText(applicationContext, res, Toast.LENGTH_SHORT).show()
                 }
 
@@ -65,11 +71,43 @@ class MainActivity: AppCompatActivity() {
             action = 1;
             biometricPrompt.authenticate(promptInfo)
         }
+
         val lockbtn = findViewById < Button > (R.id.lock)
         lockbtn.setOnClickListener {
             action = 2;
             biometricPrompt.authenticate(promptInfo)
         }
 //        biometricPrompt.authenticate(promptInfo)
+
+        val qrbtn = findViewById < Button > (R.id.qr)
+        qrbtn.setOnClickListener {
+            val intentIntegrator = IntentIntegrator(this@MainActivity)
+            intentIntegrator.setBarcodeImageEnabled(false)
+            intentIntegrator.setOrientationLocked(false)
+            intentIntegrator.initiateScan()
+
+        }
+    }
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents == null) {
+                Toast.makeText(this, "cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.d("MainActivity", "Scanned")
+                Toast.makeText(this, "Browse -> " + result.contents, Toast.LENGTH_SHORT)
+                    .show()
+                if ( URLUtil.isValidUrl(result.contents)){
+                    var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5/open?url="+result.contents).readText();
+                    Toast.makeText(applicationContext, res, Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
