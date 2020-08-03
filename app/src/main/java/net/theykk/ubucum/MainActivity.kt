@@ -87,6 +87,20 @@ class MainActivity: AppCompatActivity() {
             intentIntegrator.initiateScan()
 
         }
+
+        // Volume controls
+        val plusbtn = findViewById < Button > (R.id.plus)
+        plusbtn.setOnClickListener {
+            var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5/plus").readText();
+            Toast.makeText(applicationContext, res, Toast.LENGTH_SHORT).show()
+        }
+
+        val minusbtn = findViewById < Button > (R.id.minus)
+        minusbtn.setOnClickListener {
+            var res = URL("http://kaan-ubu:8080/0b63f3a3-2d28-423e-90f4-da7af27b83f5/minus").readText();
+            Toast.makeText(applicationContext, res, Toast.LENGTH_SHORT).show()
+        }
+
     }
     override fun onActivityResult(
         requestCode: Int,

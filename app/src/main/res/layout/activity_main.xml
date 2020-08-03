@@ -41,4 +41,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unlock"
         app:layout_constraintVertical_bias="0.23" />
+
+    <Button
+        android:id="@+id/plus"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="28dp"
+        android:paddingLeft="0px"
+        android:paddingTop="0px"
+        android:paddingRight="0px"
+        android:paddingBottom="0px"
+        android:text="+"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/minus"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="28dp"
+        android:paddingLeft="0px"
+        android:paddingTop="0px"
+        android:paddingRight="0px"
+        android:paddingBottom="0px"
+        android:text="-"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plus" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
